@@ -22,3 +22,4 @@ from run_TLD import *
 from run_MUSTer import *
 from run_MEEM import *
 from run_MDNet import *
+from run_ECO import *
