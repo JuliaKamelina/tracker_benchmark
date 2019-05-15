@@ -1,9 +1,9 @@
-import urllib2
 import zipfile
 import shutil
 import copy
 
 from PIL import Image
+from urllib.request import urlopen
 
 from config import *
 from scripts import *
@@ -56,6 +56,7 @@ def setup_seqs(loadSeqs):
         save_seq_config(seq)
 
 def save_seq_config(seq):
+    print(seq)
     string = json.dumps(seq.__dict__, indent=2)
     src = os.path.join(SEQ_SRC, seq.name)
     configFile = open(src+'/cfg.json', 'wb')

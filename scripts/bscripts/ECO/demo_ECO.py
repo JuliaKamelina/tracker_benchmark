@@ -6,8 +6,8 @@ import numpy as np
 from PIL import Image
 sys.path.append('./')
 
-from implementation import Tracker
-from implementation.utils import load_video_info, get_sequence_info
+from .implementation import Tracker
+from .implementation.utils import load_video_info, get_sequence_info
 
 def ECO(path):
     cur_path = os.path.dirname(os.path.abspath(__file__))
