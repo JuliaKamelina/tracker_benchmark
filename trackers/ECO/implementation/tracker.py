@@ -94,7 +94,9 @@ class Tracker:
             img_sample_sz = self.base_target_sz + math.sqrt(np.prod(self.base_target_sz*params["search_area_scale"]) + (self.base_target_sz[0] - self.base_target_sz[1])/4) - sum(self.base_target_sz)/2
         if params["search_area_shape"] == 'custom':
             img_sample_sz = np.array((self.base_target_sz[0]*2, self.base_target_sz[1]*2), float)
-        img_sample_sz = np.ceil(img_sample_sz)
+
+        img_sample_sz[0] = np.ceil(img_sample_sz[0]) if img_sample_sz[0] - np.floor(img_sample_sz[0]) > 0.5 else np.floor(img_sample_sz[0])
+        img_sample_sz[1] = np.ceil(img_sample_sz[1]) if img_sample_sz[1] - np.floor(img_sample_sz[1]) > 0.5 else np.floor(img_sample_sz[1])
 
         init_features(self.is_color_image, img_sample_sz, 'odd_cells')
 
@@ -185,7 +187,9 @@ class Tracker:
         tic = time.clock()
 
         if iter == 0:  # INIT AND UPDATE TRACKER
-            self.sample_pos = np.round(self.pos)
+            self.sample_pos = [0,0]
+            self.sample_pos[0] = np.ceil(self.pos[0]) if self.pos[0] - np.floor(self.pos[0]) > 0.5 else np.floor(self.pos[0])
+            self.sample_pos[1] = np.ceil(self.pos[1]) if self.pos[1] - np.floor(self.pos[1]) > 0.5 else np.floor(self.pos[1])
             sample_scale = self.currentScaleFactor
             xl = [x for i in range(0, len(features))
                     for x in features[i]["feature"](frame, self.sample_pos, features[i]['img_sample_sz'], self.currentScaleFactor, i)]

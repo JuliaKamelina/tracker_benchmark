@@ -10,6 +10,12 @@ from ._gradient import *
 
 from ..runfiles import settings
 
+def _round(x):
+    res = x.copy()
+    res[0] = np.ceil(x[0]) if x[0] - np.floor(x[0]) >= 0.5 else np.floor(x[0])
+    res[1] = np.ceil(x[1]) if x[1] - np.floor(x[1]) >= 0.5 else np.floor(x[1])
+    return res
+
 def init_features(is_color_image = False, img_sample_sz = [], size_mode = ''):
     if (size_mode == ''):
         size_mode = 'same'
@@ -127,11 +133,11 @@ def init_features(is_color_image = False, img_sample_sz = [], size_mode = ''):
         elif size_mode == "exact":
             features[cnn_feature_ind]["img_sample_sz"] = round(img_sample_sz / max_cell_size) * max_cell_size
         elif size_mode == "odd_cells":
-            new_img_sample_sz = (1 + 2*np.ceil(img_sample_sz / (2*max_cell_size))) * max_cell_size
+            new_img_sample_sz = (1 + 2*_round(img_sample_sz / (2*max_cell_size))) * max_cell_size
             feature_sz_choices = np.array([(new_img_sample_sz.reshape(-1, 1) + np.arange(0, max_cell_size).reshape(1, -1)) // x for x in cell_szs])
             num_odd_dimensions = np.sum((feature_sz_choices % 2) == 1, axis=(0,1))
             best_choice = np.argmax(num_odd_dimensions.flatten())
-            features[cnn_feature_ind]["img_sample_sz"] = np.round(new_img_sample_sz + best_choice)
+            features[cnn_feature_ind]["img_sample_sz"] = _round(new_img_sample_sz + best_choice)
 
     for i in range(0, len(features)):
         if (not features[i]["is_cell"]):
@@ -155,7 +161,7 @@ def feature_normalization(x):
 
 def get_sample(im, pos, img_sample_sz, output_sz):
     pos = np.floor(pos)
-    sample_sz = np.maximum(np.round(img_sample_sz), 1)
+    sample_sz = np.maximum(_round(img_sample_sz), 1)
     x = np.floor(pos[1]) + np.arange(0, sample_sz[1]+1) - np.floor((sample_sz[1]+1)/2)
     y = np.floor(pos[0]) + np.arange(0, sample_sz[0]+1) - np.floor((sample_sz[0]+1)/2)
     x_min = max(0, int(x.min()))
