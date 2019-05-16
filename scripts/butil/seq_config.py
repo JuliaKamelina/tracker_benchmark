@@ -1,7 +1,7 @@
 import zipfile
 import shutil
 import copy
-
+# import urllib2
 from PIL import Image
 from urllib.request import urlopen
 
@@ -56,8 +56,9 @@ def setup_seqs(loadSeqs):
         save_seq_config(seq)
 
 def save_seq_config(seq):
-    print(seq)
-    string = json.dumps(seq.__dict__, indent=2)
+    seq1 = seq.__dict__
+    seq1["gtRect"] = [list(item) for item in seq1["gtRect"]]
+    string = json.dumps(seq.__dict__)
     src = os.path.join(SEQ_SRC, seq.name)
     configFile = open(src+'/cfg.json', 'wb')
     configFile.write(string)

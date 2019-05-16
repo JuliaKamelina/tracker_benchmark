@@ -137,7 +137,7 @@ def init_features(is_color_image = False, img_sample_sz = [], size_mode = ''):
             feature_sz_choices = np.array([(new_img_sample_sz.reshape(-1, 1) + np.arange(0, max_cell_size).reshape(1, -1)) // x for x in cell_szs])
             num_odd_dimensions = np.sum((feature_sz_choices % 2) == 1, axis=(0,1))
             best_choice = np.argmax(num_odd_dimensions.flatten())
-            features[cnn_feature_ind]["img_sample_sz"] = _round(new_img_sample_sz + best_choice)
+            features[cnn_feature_ind]["img_sample_sz"] = np.round(new_img_sample_sz + best_choice)
 
     for i in range(0, len(features)):
         if (not features[i]["is_cell"]):

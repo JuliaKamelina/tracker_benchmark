@@ -87,7 +87,4 @@ def optimize_scores(scores_fs, iterations):
     disp_row = ((max_pos_y[scale_idx][0][0] + np.pi) % (2 * np.pi) - np.pi) / (2 * np.pi) * output_sz[0]
     disp_col = ((max_pos_x[scale_idx][0][0] + np.pi) % (2 * np.pi) - np.pi) / (2 * np.pi) * output_sz[1]
 
-    if np is np:
-        return disp_row, disp_col, scale_idx
-    else:
-        return disp_row.get(), disp_col.get(), scale_idx.get()
+    return disp_row, disp_col, scale_idx

@@ -18,6 +18,12 @@ from .optimize_scores import *
 from .scale_filter import ScaleFilter
 from .runfiles import settings
 
+def _round(x):
+    res = x.copy()
+    res[0] = np.ceil(x[0]) if x[0] - np.floor(x[0]) >= 0.5 else np.floor(x[0])
+    res[1] = np.ceil(x[1]) if x[1] - np.floor(x[1]) >= 0.5 else np.floor(x[1])
+    return res
+
 class Tracker:
     def InitCG(self):
         params = settings.params
@@ -252,8 +258,8 @@ class Tracker:
             old_pos = np.zeros((2))
             for _ in range(0, params['refinement_iterations']):
                 if not np.allclose(old_pos, self.pos):
-                    old_pos = self.pos
-                    self.sample_pos = np.round(self.pos)
+                    old_pos = self.pos.copy()
+                    self.sample_pos = _round(self.pos)
                     sample_scale = self.currentScaleFactor*self.scaleFactors
                     xt = [x for i in range(0, len(features))
                           for x in features[i]["feature"](frame, self.sample_pos, features[i]['img_sample_sz'], sample_scale, i)] # extract features
@@ -344,4 +350,6 @@ class Tracker:
                 int(self.pos[1] + self.target_sz[1]/2),  # x_max
                 int(self.pos[0] - self.target_sz[0]/2),  # y_min
                 int(self.pos[0] + self.target_sz[0]/2))  # y_max
+        print(self.pos)
+        print(self.target_sz)
         return (bbox, tracker_time)
